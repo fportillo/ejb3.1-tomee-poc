@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 public class MyBeanTest extends EJBContextAware {
 
-	private static final String JAVA_GLOBAL_EJB3_1_POC_MY_BEAN = "java:global/ejb3.1-poc/MyBean";
+	private static final String JAVA_GLOBAL_EJB3_1_POC_MY_BEAN = "java:global/ejb3.1-tomee-poc/MyBean";
 	private static MyBean adder; 
 	
 	@BeforeMethod
