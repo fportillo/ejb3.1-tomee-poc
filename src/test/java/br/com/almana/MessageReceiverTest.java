@@ -1,9 +1,12 @@
 package br.com.almana;
 
+import static org.testng.AssertJUnit.assertTrue;
+
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
@@ -18,7 +21,7 @@ import org.testng.annotations.Test;
 @Stateless
 public class MessageReceiverTest extends EJBContextAware {
 
-	@Resource
+	@Resource(name = "MessageReceiver")
 	private Queue queue;
 	
 	@Resource
@@ -29,13 +32,15 @@ public class MessageReceiverTest extends EJBContextAware {
 	}
 
 	@Test
-	public void sendMessageToQueue() throws JMSException, NamingException {
+	public void sendMessageToQueue() throws JMSException, NamingException, InterruptedException {
 		bind();
 		Connection connection = connectionFactory.createConnection();
 		connection.start();
 		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		MessageProducer messageProducer = session.createProducer(queue);
-		messageProducer.send(session.createTextMessage("Hello!"));
+		MessageProducer producer = session.createProducer(queue);
+		producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+		producer.send(session.createTextMessage("Hello World!"));
+		assertTrue(session.getAcknowledgeMode() == Session.AUTO_ACKNOWLEDGE);
 		session.close();
 		connection.close();
 	}
